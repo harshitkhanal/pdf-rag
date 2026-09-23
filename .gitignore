@@ -1,0 +1,33 @@
+# Python virtual environment
+
+rag/
+
+# Environment variables / API keys
+
+.env
+
+# User / generated data
+
+data/chats/
+data/documents/
+
+# Jupyter notebooks
+
+*.ipynb
+
+# Python cache
+
+**pycache**/
+*.py[cod]
+
+# Frontend dependencies / build files
+
+frontend/node_modules/
+frontend/dist/
+
+# Editor / OS files
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
