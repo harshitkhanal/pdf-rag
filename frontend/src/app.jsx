@@ -20,7 +20,7 @@ export default function App() {
 
   const [pdf, setPdf] = useState(null);
 
-  const [messages, setMessages] = useState([]);
+
 
   const [isFileProcessing, setFileProcessing] = useState(false);
 
@@ -32,6 +32,11 @@ export default function App() {
 
   // Theme state
   const [theme, setTheme] = useState("dark");
+
+  const currentChat = recentChats.find(
+    (chat)=>chat.id == currChat
+  )
+  const messages = currentChat?.messages ?? []
 
   useEffect(() => {
     const loadChats = async () => {
@@ -58,22 +63,6 @@ export default function App() {
 
   }, [recentChats]);
 
-  useEffect(() => {
-    if (currChat == null) return;
-
-    setChats((prev) =>
-      prev.map((chat) => {
-        if (chat.id === currChat) {
-          return {
-            ...chat,
-            messages: messages,
-          };
-        }
-
-        return chat;
-      })
-    );
-  }, [messages, currChat]);
 
   const getpdfUrl = async (document_id) => {
     
@@ -123,7 +112,6 @@ export default function App() {
       ]);
 
       setCurrChat(id);
-      setMessages([]);
       setPdf(pdfInfo);
     } catch (error) {
       console.error(error);
@@ -136,38 +124,62 @@ export default function App() {
     if (!text.trim() || !pdf?.document_id) return;
 
     const userQuery = text.trim();
+    const chatId = currChat;
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        content: userQuery,
-      },
-    ]);
+    setChats((prev) =>
+  prev.map((chat) =>
+    chat.id === chatId
+      ? {
+          ...chat,
+          messages: [
+            ...chat.messages,
+            {
+              role: "user",
+              content: userQuery,
+            },
+          ],
+        }
+      : chat
+  )
+);
 
     try {
       setLoading(true);
 
       const response = await get_answer(userQuery,pdf.document_id)
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: response.data.answer,
-        },
-      ]);
+      setChats((prev)=> 
+      prev.map((chat)=> 
+      chat.id == chatId ? {
+        ...chat,
+        messages: [
+          ...chat.messages,
+          {
+            role: "assistant",
+            content: response.data.answer,
+          },
+        ]
+      }: chat
+      ))
     } catch (e) {
       console.error("Failed to send message:", e);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "Sorry, I couldn't process your request. Please try again.",
-        },
-      ]);
+      setChats((prev) =>
+      prev.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: [
+                ...chat.messages,
+                {
+                  role: "assistant",
+                  content:
+                    "Sorry, I couldn't process your request. Please try again.",
+                },
+              ],
+            }
+          : chat
+      )
+    );
     } finally {
       setLoading(false);
     }
@@ -175,7 +187,6 @@ export default function App() {
 
   const handleNewChat = () => {
     setCurrChat(null);
-    setMessages([]);
     setPdf(null);
     setSelectedFile(null);
   }
@@ -183,7 +194,6 @@ export default function App() {
   const handleSelectChat = (chat) => {
     setCurrChat(chat.id);
     setPdf(chat.pdfInfo);
-    setMessages(chat.messages);
     getpdfUrl(chat.pdfInfo.document_id);
   }
 
