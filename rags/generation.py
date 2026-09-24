@@ -4,7 +4,7 @@ from rags.retrieve import retrieve
 
 import os
 import random
-
+import time
 load_dotenv()
 
 client = genai.Client(
@@ -15,6 +15,7 @@ models = [
     "gemini-3.5-flash",
     "gemini-3.8-flash",
     "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
     "gemini-2.5-flash",
     "gemini-3-flash-preview",
     "gemini-3.7-flash"
@@ -77,10 +78,9 @@ User question:
 """
 
    
-    models_shuffled = random.sample(models, len(models))
 
     interaction = None
-
+    models_shuffled = random.sample(models,len(models))
     for model in models_shuffled:
         try:
             interaction = client.interactions.create(
@@ -92,6 +92,7 @@ User question:
 
         except Exception as e:
             print(f"{model} failed: {e}")
+            time.sleep(2)
 
     if interaction is None:
         return "Unable to generate an answer. Please try again later."
