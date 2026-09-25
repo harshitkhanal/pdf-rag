@@ -13,13 +13,7 @@ return (
 
     <div className="flex h-16 items-center justify-between px-4">
 
-      <button
-        type="button"
-        aria-label="Close sidebar"
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
-      >
-        <PanelLeftClose size={18} />
-      </button>
+  
 
       <button
         type="button"

@@ -32,13 +32,7 @@ export default function ChatInput({handleSendMessage,disabled}) {
 
           <div className="flex items-center gap-2">
 
-            <button
-              type="button"
-              aria-label="Attach file"
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-white/[0.06] dark:hover:text-zinc-200"
-            >
-              <Paperclip size={17} />
-            </button>
+         
 
             <span className="hidden text-[11px] text-zinc-500 sm:block dark:text-zinc-600">
               Answers are based on your uploaded PDF
